@@ -9,6 +9,12 @@ public abstract class Room{
     //Odanın gecelik temel fiyatı(inheritance ile alt sınıflar erişebilsin diye protected yaptım)
     protected double price;
 
+    // Kurucu Metot: Oda nesnesi oluşturulurken numara ve fiyat bilgisini atar.
+    public Room(int roomNumber, double price) {
+        this.roomNumber = roomNumber;
+        this.price = price;
+    }
+
     /**
      * Odanın fiyatını hesaplayan metot.
      * Her oda tipi (Deluxe/Standard) fiyatı farklı hesaplayacağı için
