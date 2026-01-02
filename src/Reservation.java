@@ -1,14 +1,14 @@
 /**
- * Rezervasyon kaydının yönetildiği sınıf.
+ * Rezervasyon işlemlerini yönettiğim sınıf.
  * Bir Müşteri (Customer) ile bir Odayı (Room) ilişkilendirerek rezervasyon kaydı oluşturur.
- * Ayrıca kaç gece kalacağı bilgisini tutar.
+ *  Ayrıca kaç gece kalacağı bilgisini tutar.
  */
 public class Reservation {
 
     // Rezervasyonu yapan müşteri nesnesi
     private Customer customer;
 
-    // Kiralanan oda nesnesi (Polymorphism sayesinde Standard veya Deluxe olabilir)
+    // Kiralanan oda nesnesi
     private Room room;
 
     // Giriş tarihi
@@ -18,21 +18,25 @@ public class Reservation {
     private int nightCount;
 
     // Kurucu Metot (Constructor):
-    // Rezervasyon oluşturulurken müşteri, oda ve tarih bilgilerini zorunlu tutuyorum.
     public Reservation(Customer customer, Room room, String checkInDate, int nightCount) {
         this.customer = customer;
         this.room = room;
         this.checkInDate = checkInDate;
         this.nightCount = nightCount;
+
+        // --- yeni eklenen kısım ---
+        // Rezervasyon nesnesi oluşturulduğu anda,
+        // ilgili odanın "makeReservation" metodunu çağırarak odayı dolu hale getiriyoruz.
+        room.makeReservation();
     }
 
-    // Toplam tutarı hesaplayan metot:
+    // Toplam tutarı hesaplayan metot
     // Odanın gecelik fiyatı * gece sayısı
     public double getTotalPrice() {
         return room.calculatePrice() * nightCount;
     }
 
-    // Rezervasyon detaylarını ekrana toplu yazdırmak için toString metodunu düzenledim.
+    // Rezervasyon detaylarını yazdırma
     @Override
     public String toString() {
         return "REZERVASYON DETAYI:\n" +
