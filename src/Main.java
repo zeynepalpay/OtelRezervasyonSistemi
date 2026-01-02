@@ -1,27 +1,44 @@
 public class Main {
     public static void main(String[] args) {
 
-        System.out.println("=== OTEL REZERVASYON SİSTEMİ TEST BAŞLANGICI ===");
+        System.out.println("============================================");
+        System.out.println("=== OTEL REZERVASYON SİSTEMİ TESTİ ===");
+        System.out.println("============================================");
         System.out.println();
 
-        // Standart oda nesnesi oluşturulup fiyatın doğru gelip gelmediği test edilir.
+        // ---------------------------------------------------------
+        // BÖLÜM 1: ODA VE FİYAT TESTLERİ
+        // ---------------------------------------------------------
+        System.out.println("--- 1. Adım: Oda Fiyatlarının Kontrolü ---");
+
+        // Standart oda oluşturup fiyatını doğruluyorum.
         StandardRoom stdOda = new StandardRoom(101, 1000.0);
+        System.out.println("Standart Oda (No: 101) Fiyatı: " + stdOda.calculatePrice() + " TL");
 
-        System.out.println("Oda No: " + stdOda.getRoomNumber());
-        System.out.println("Oda Tipi: Standart");
-        System.out.println("Fiyat: " + stdOda.calculatePrice() + " TL");
-
-        System.out.println("-----------------------------");
-
-        // Deluxe oda nesnesi oluşturulur.
-        // Fiyat hesaplama metodunun (Override edilen) %20 fark ekleyip eklemediği kontrol edilir.
+        // Deluxe oda oluşturup %20 zammın yansıyıp yansımadığını kontrol ediyorum.
         DeluxeRoom luksOda = new DeluxeRoom(201, 1000.0);
+        System.out.println("Deluxe Oda (No: 201) Fiyatı: " + luksOda.calculatePrice() + " TL");
 
-        System.out.println("Oda No: " + luksOda.getRoomNumber());
-        System.out.println("Oda Tipi: Deluxe");
-        System.out.println("Fiyat: " + luksOda.calculatePrice() + " TL");
+        System.out.println(); // Boşluk
+
+        // ---------------------------------------------------------
+        // BÖLÜM 2: REZERVASYON SİSTEMİ TESTİ
+        // ---------------------------------------------------------
+        System.out.println("--- 2. Adım: Rezervasyon Oluşturma ---");
+
+        // Sisteme bir müşteri tanımlıyorum.
+        Customer musteri = new Customer(1, "Şevval Yılmaz", "0553-123-4567");
+        System.out.println("Müşteri Tanımlandı: " + musteri.getName());
+
+        // Yukarıda oluşturduğum Deluxe odayı (luksOda) Şevval Hanım'a 5 geceliğine rezerve ediyorum.
+        // Sistem; Müşteri, Oda ve Gece sayısını alıp toplam tutarı hesaplamalı.
+        Reservation yeniRezervasyon = new Reservation(musteri, luksOda, "2.01.2026", 5);
 
         System.out.println();
-        System.out.println("=== TEST SONU ===");
+        // Rezervasyonun tüm detaylarını (toString metodu ile) ekrana yazdırıyorum.
+        System.out.println(yeniRezervasyon.toString());
+
+        System.out.println();
+        System.out.println("=== TÜM TESTLER BAŞARIYLA TAMAMLANDI ===");
     }
 }
