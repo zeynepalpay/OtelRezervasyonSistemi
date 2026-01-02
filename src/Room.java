@@ -1,30 +1,62 @@
 /**
- * Oteldeki tüm odaların ortak özelliklerini tutan Ana (Ata) sınıf.
- * Standard ve Deluxe odalar buradan türetilecek.
- * Soyut (abstract) olduğu için tek başına nesne olarak üretilemez.
+ * Oteldeki odaların temelini oluşturan soyut (abstract) sınıf.
+ * Room sınıfı artık 'Reservable' arayüzünü uyguluyor (implements).
+ * Yani rezervasyon kurallarına uymak zorunda.
  */
-public abstract class Room{
-    //Odanın kapı numarası
-    private int roomNumber;
-    //Odanın gecelik temel fiyatı(inheritance ile alt sınıflar erişebilsin diye protected yaptım)
+public abstract class Room implements Reservable {
+
+    // Odanın numarası (Değiştirilemez)
+    private final int roomNumber;
+
+    // Odanın gecelik temel fiyatı (Alt sınıflar erişebilsin diye protected)
     protected double price;
 
-    // Kurucu Metot: Oda nesnesi oluşturulurken numara ve fiyat bilgisini atar.
+    // Odanın dolu olup olmadığını tutan değişken
+    // True = Dolu, False = Boş
+    private boolean isOccupied;
+
+    // Kurucu Metot
     public Room(int roomNumber, double price) {
         this.roomNumber = roomNumber;
         this.price = price;
+        this.isOccupied = false; // Oda ilk oluşturulduğunda boştur.
     }
 
-    /**
-     * Odanın fiyatını hesaplayan metot.
-     * Her oda tipi (Deluxe/Standard) fiyatı farklı hesaplayacağı için
-     * burada abstract bıraktım, alt sınıflar içini dolduracak.
-     */
+    // Soyut Metot (Alt sınıflar dolduracak)
     public abstract double calculatePrice();
 
-    //Oda numarasını okumak için getter metodu
+    // --- Reservable Arayüzünden Gelen Zorunlu Metotlar ---
+
+    // 1. Rezervasyon Yap
+    @Override
+    public void makeReservation() {
+        if (!isOccupied) {
+            isOccupied = true;
+            System.out.println("Oda " + roomNumber + " için rezervasyon yapıldı.");
+        } else {
+            System.out.println("HATA: Oda " + roomNumber + " zaten dolu!");
+        }
+    }
+
+    // 2. Rezervasyonu İptal Et
+    @Override
+    public void cancelReservation() {
+        if (isOccupied) {
+            isOccupied = false;
+            System.out.println("Oda " + roomNumber + " rezervasyonu iptal edildi.");
+        } else {
+            System.out.println("HATA: Oda " + roomNumber + " zaten boş!");
+        }
+    }
+
+    // 3. Müsait mi?
+    @Override
+    public boolean isAvailable() {
+        return !isOccupied; // Dolu değilse müsaittir.
+    }
+
+    // Getter Metodu
     public int getRoomNumber() {
         return roomNumber;
     }
-
 }
