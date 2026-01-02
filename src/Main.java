@@ -22,21 +22,37 @@ public class Main {
         System.out.println(); // Boşluk
 
         // ---------------------------------------------------------
-        // BÖLÜM 2: REZERVASYON SİSTEMİ TESTİ
+        // BÖLÜM 2: REZERVASYON SİSTEMİ (BAŞARILI SENARYO)
         // ---------------------------------------------------------
-        System.out.println("--- 2. Adım: Rezervasyon Oluşturma ---");
+        System.out.println("--- 2. Adım: Rezervasyon Oluşturma (Şevval Yılmaz) ---");
 
         // Sisteme bir müşteri tanımlıyorum.
-        Customer musteri = new Customer(1, "Şevval Yılmaz", "0553-123-4567");
-        System.out.println("Müşteri Tanımlandı: " + musteri.getName());
+        Customer musteri1 = new Customer(1, "Şevval Yılmaz", "0553-123-4567");
+        System.out.println("Müşteri Tanımlandı: " + musteri1.getName());
 
-        // Yukarıda oluşturduğum Deluxe odayı (luksOda) Şevval Hanım'a 5 geceliğine rezerve ediyorum.
-        // Sistem; Müşteri, Oda ve Gece sayısını alıp toplam tutarı hesaplamalı.
-        Reservation yeniRezervasyon = new Reservation(musteri, luksOda, "2.01.2026", 5);
+        // Şevval Hanım, 201 numaralı Deluxe odayı (luksOda) tutuyor.
+        // BEKLENEN: "Oda 201 için rezervasyon yapıldı." yazısı çıkmalı.
+        Reservation rez1 = new Reservation(musteri1, luksOda, "2.01.2026", 5);
 
         System.out.println();
-        // Rezervasyonun tüm detaylarını (toString metodu ile) ekrana yazdırıyorum.
-        System.out.println(yeniRezervasyon.toString());
+        System.out.println(rez1.toString());
+
+        System.out.println("--------------------------------------------");
+
+        // ---------------------------------------------------------
+        // BÖLÜM 3: ÇAKIŞMA TESTİ (BAŞARISIZ SENARYO)
+        // ---------------------------------------------------------
+        System.out.println("--- 3. Adım: Aynı Odaya İkinci Kişi (HATA KONTROLÜ) ---");
+
+        // Yeni bir müşteri: Mehmet Bey
+        Customer musteri2 = new Customer(2, "Mehmet Bey", "555-999-8888");
+        System.out.println("Yeni Müşteri Geldi: " + musteri2.getName());
+
+        System.out.println(">> Mehmet Bey, Şevval Hanım'ın odasını (201) istiyor...");
+
+        // Mehmet Bey, AZ ÖNCE DOLAN 'luksOda'yı (201) tutmaya çalışıyor.
+        // BEKLENEN: "HATA: Oda 201 zaten dolu!" yazısı çıkmalı.
+        Reservation rez2 = new Reservation(musteri2, luksOda, "03.01.2026", 2);
 
         System.out.println();
         System.out.println("=== TÜM TESTLER BAŞARIYLA TAMAMLANDI ===");
