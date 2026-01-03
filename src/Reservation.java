@@ -5,45 +5,47 @@
  */
 public class Reservation {
 
-    // Rezervasyonu yapan müşteri nesnesi
     private Customer customer;
-
-    // Kiralanan oda nesnesi
     private Room room;
-
-    // Giriş tarihi
     private String checkInDate;
-
-    // Konaklama süresi (gece sayısı)
     private int nightCount;
 
-    // Kurucu Metot (Constructor):
-    public Reservation(Customer customer, Room room, String checkInDate, int nightCount) {
+    // Kurucu Metot (Constructor)
+    public Reservation(Customer customer, Room room, String checkInDate, int nightCount, String cardNumber) {
         this.customer = customer;
         this.room = room;
         this.checkInDate = checkInDate;
         this.nightCount = nightCount;
 
-        // --- yeni eklenen kısım ---
-        // Rezervasyon nesnesi oluşturulduğu anda,
-        // ilgili odanın "makeReservation" metodunu çağırarak odayı dolu hale getiriyoruz.
-        room.makeReservation();
+        // 1. Ödenecek tutarı hesapla
+        double totalAmount = getTotalPrice();
+
+        // 2. Ödeme nesnesi oluştur (Tutar, Müşteri Adı, Kart No)
+        Payment odeme = new Payment(totalAmount, customer.getName(), cardNumber);
+
+        // 3. Ödemeyi işlemeye çalış
+        if (odeme.processPayment()) {
+            // EĞER ÖDEME BAŞARILIYSA: Odayı kilitle (Rezervasyon yapılır)
+            room.makeReservation();
+            System.out.println("✅ Rezervasyon başarıyla onaylandı!");
+        } else {
+            // EĞER ÖDEME BAŞARISIZSA: Odayı kilitleme, hata mesajı ver.
+            System.out.println("❌ Rezervasyon BAŞARISIZ! Ödeme alınamadı.");
+        }
     }
 
-    // Toplam tutarı hesaplayan metot
-    // Odanın gecelik fiyatı * gece sayısı
+    // Toplam tutar hesaplama
     public double getTotalPrice() {
         return room.calculatePrice() * nightCount;
     }
 
-    // Rezervasyon detaylarını yazdırma
     @Override
     public String toString() {
-        return "REZERVASYON DETAYI:\n" +
+        return "REZERVASYON FİŞİ:\n" +
                 "- Müşteri: " + customer.getName() + "\n" +
                 "- Oda No: " + room.getRoomNumber() + "\n" +
-                "- Tarih: " + checkInDate + "\n" +
+                "- Giriş Tarihi: " + checkInDate + "\n" +
                 "- Gece Sayısı: " + nightCount + "\n" +
-                "- TOPLAM TUTAR: " + getTotalPrice() + " TL";
+                "- ÖDENEN TUTAR: " + getTotalPrice() + " TL";
     }
 }
