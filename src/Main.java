@@ -1,5 +1,4 @@
 public class Main {
-
     //  ANA METOT
     public static void main(String[] args) {
 
@@ -39,8 +38,6 @@ public class Main {
         Customer musteri1 = new Customer(1, "Şevval Yılmaz", "0553-123-4567");
         System.out.println("Müşteri: " + musteri1.getName());
 
-        // DİKKAT: Artık sona "1234123412341234" diye 16 haneli kart no ekledim.
-        // Sistem bunu kabul etmeli.
         Reservation rez1 = new Reservation(musteri1, luksOda, "2.01.2026", 5, "1234123412341234");
 
         System.out.println();
@@ -56,13 +53,12 @@ public class Main {
 
         System.out.println(">> Mehmet Bey eksik numaralı (hatalı) kartla deniyor...");
 
-        // Kart numarası olarak "123" giriyorum (16 hane değil)
-        // Beklenen: Sistemin "HATA" vermesi ve rezervasyonu yapmaması.
+        // Kart numarası hatalı olduğu için işlem başarısız olacak
         new Reservation(musteri2, luksOda, "03.01.2026", 2, "123");
     }
 
     // ----------------------------------------------------------------
-    // BÖLÜM 2: GENEL SİSTEM TESTİ (Skyline Hotel Entegrasyonu)
+    // BÖLÜM 2: GENEL SİSTEM TESTİ
     // ----------------------------------------------------------------
     public static void runIntegrationTests() {
         System.out.println(">>> BÖLÜM 2: OTEL VE ÖDEME ENTEGRASYONU <<<");
@@ -88,11 +84,22 @@ public class Main {
 
         Customer c = new Customer(99, "Zeynep Kaya", "0555-444-3322");
 
-        // Geçerli bir kart numarası giriyorum, ödeme alınsın.
-        new Reservation(c, r1, "10.05.2026", 3, "1111222233334444");
+        // ! Rezervasyonu 'rez' isminde bir değişkene atadım ki sonra iptal edebileyim.
+        Reservation rez = new Reservation(c, r1, "10.05.2026", 3, "1111222233334444");
 
-        // 3. Kontrol ediyorum
+        // 3. Kontrol ediyorum (Oda 100 gitmiş olmalı)
         System.out.println(">> GÜNCEL MÜSAİT ODA LİSTESİ (100 Numaralı oda gitmiş olmalı):");
+        otel.listAvailableRooms();
+
+        //İptal senaryosu
+        System.out.println("--------------------------------------------");
+        System.out.println(">> Zeynep Hanım vazgeçti, rezervasyonu İPTAL etmek istiyor...");
+
+        // Rezervasyon sınıfına yazdığım cancel metodunu çağırıyorum.
+        rez.cancel();
+
+        // 4. Final Kontrol (Oda 100 geri gelmiş olmalı)
+        System.out.println(">> Final Kontrol: Oda 100 listeye geri döndü mü?");
         otel.listAvailableRooms();
     }
 }

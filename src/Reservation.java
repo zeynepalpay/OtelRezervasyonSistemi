@@ -1,7 +1,7 @@
 /**
  * Rezervasyon işlemlerini yönettiğim sınıf.
  * Bir Müşteri (Customer) ile bir Odayı (Room) ilişkilendirerek rezervasyon kaydı oluşturur.
- *  Ayrıca kaç gece kalacağı bilgisini tutar.
+ * Ayrıca kaç gece kalacağı bilgisini tutar.
  */
 public class Reservation {
 
@@ -37,6 +37,13 @@ public class Reservation {
     // Toplam tutar hesaplama
     public double getTotalPrice() {
         return room.calculatePrice() * nightCount;
+    }
+
+    // Rezervasyon İptali --
+    // Bu metot çağrıldığında, Room sınıfındaki 'cancelReservation' çalışır ve oda boşa çıkar.
+    public void cancel() {
+        room.cancelReservation();
+        System.out.println("ℹ️ Bilgi: Rezervasyon kaydı silindi ve oda tekrar satışa açıldı.");
     }
 
     @Override
