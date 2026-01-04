@@ -13,16 +13,18 @@ public class Customer {
     // İletişim numarası
     private String phoneNumber;
 
-    // Kurucu Metot (Constructor): 
-    // Yeni bir müşteri oluştururken id, isim ve telefon bilgisini zorunlu tutuyorum.
+    // Sadakat Puanı(yeni ekledim)
+    private int loyaltyPoints;
+
+    // Kurucu Metot (Constructor)
     public Customer(int id, String name, String phoneNumber) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
+        this.loyaltyPoints = 0; // Yeni müşteri her zaman 0 puanla başlar.
     }
 
     // --- Getter Metotları ---
-    // Değişkenler private olduğu için, bu verileri dışarıdan okuyabilmek adına getter metotlarını ekledim.
 
     public int getId() {
         return id;
@@ -36,10 +38,22 @@ public class Customer {
         return phoneNumber;
     }
 
-    // Müşteri nesnesini ekrana yazdırdığımda hafıza adresi yerine 
-    // anlamlı bilgiler görmek için toString metodunu yeniden tanımladım (Override).
+    // Yeni metot: Puanı Okuma
+    public int getLoyaltyPoints() {
+        return loyaltyPoints;
+    }
+
+    // Yeni metot: Puan Ekleme İşlemi
+    // Bu metodu Rezervasyon sınıfından çağıracağım.
+    public void addLoyaltyPoints(int points) {
+        this.loyaltyPoints += points;
+        System.out.println("🌟 SİSTEM MESAJI: " + this.name + " hesabına " + points + " sadakat puanı yüklendi.");
+        System.out.println("   -> Güncel Toplam Puan: " + this.loyaltyPoints);
+    }
+
     @Override
     public String toString() {
-        return "Müşteri Bilgisi -> ID: " + id + " | Ad: " + name + " | Tel: " + phoneNumber;
+        return "Müşteri Bilgisi -> ID: " + id + " | Ad: " + name +
+                " | Tel: " + phoneNumber + " | Puan: " + loyaltyPoints;
     }
 }

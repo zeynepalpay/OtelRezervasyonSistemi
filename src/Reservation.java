@@ -28,6 +28,13 @@ public class Reservation {
             // EĞER ÖDEME BAŞARILIYSA: Odayı kilitle (Rezervasyon yapılır)
             room.makeReservation();
             System.out.println("✅ Rezervasyon başarıyla onaylandı!");
+
+            // Sadakat puanı dağıtımı
+            // Her gece konaklaması için müşteriye 10 puan hediye ediyoruz.
+            int kazanilanPuan = nightCount * 10;
+            customer.addLoyaltyPoints(kazanilanPuan);
+            // --------------------------------------------------
+
         } else {
             // EĞER ÖDEME BAŞARISIZSA: Odayı kilitleme, hata mesajı ver.
             System.out.println("❌ Rezervasyon BAŞARISIZ! Ödeme alınamadı.");
@@ -39,7 +46,7 @@ public class Reservation {
         return room.calculatePrice() * nightCount;
     }
 
-    // Rezervasyon İptali --
+    // Rezervasyon İptali
     // Bu metot çağrıldığında, Room sınıfındaki 'cancelReservation' çalışır ve oda boşa çıkar.
     public void cancel() {
         room.cancelReservation();
