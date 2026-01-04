@@ -7,14 +7,14 @@ public class Main {
         System.out.println("============================================");
         System.out.println();
 
-        // 1. AŞAMA: Ödeme ve Rezervasyon Mantığı Testi
+        // 1. AŞAMA: Temel Ödeme ve Çıkış Testi
         runUnitTests();
 
         System.out.println();
         System.out.println("********************************************");
         System.out.println();
 
-        // 2. AŞAMA: Otel ve Odaların Genel Testi
+        // 2. AŞAMA: Otel, Oda Servisi ve İptal Testi
         runIntegrationTests();
 
         System.out.println();
@@ -25,43 +25,46 @@ public class Main {
     // BÖLÜM 1: TEMEL KONTROLLER (Ödeme Sistemi Testi)
     // ----------------------------------------------------------------
     public static void runUnitTests() {
-        System.out.println(">>> BÖLÜM 1: ÖDEME VE REZERVASYON TESTİ <<<");
+        System.out.println(">>> BÖLÜM 1: ÇIKIŞ VE ÖDEME TESTİ <<<");
         System.out.println();
 
         // Odayı hazırlıyorum
         DeluxeRoom luksOda = new DeluxeRoom(201, 1000.0);
-        System.out.println("Oda Fiyatı: " + luksOda.calculatePrice() + " TL (Deluxe)");
 
         // ADIM 1: Başarılı Ödeme Senaryosu
-        System.out.println("--- Adım 1: Doğru Kart Numarasıyla Rezervasyon ---");
+        System.out.println("--- Adım 1: Rezervasyon ve Başarılı Çıkış ---");
 
         Customer musteri1 = new Customer(1, "Şevval Yılmaz", "0553-123-4567");
-        System.out.println("Müşteri: " + musteri1.getName());
 
-        Reservation rez1 = new Reservation(musteri1, luksOda, "2.01.2026", 5, "1234123412341234");
+        // DİKKAT: Artık burada kart numarası vermiyoruz! Sadece odayı tutuyoruz.
+        Reservation rez1 = new Reservation(musteri1, luksOda, "2.01.2026", 5);
 
-        System.out.println();
-        System.out.println(rez1.toString()); // Fişi yazdırıyorum
+        // Çıkış yaparken kartı veriyoruz
+        System.out.println(">> Şevval Hanım çıkış yapıyor...");
+        rez1.checkOut("1234123412341234"); // Geçerli kart
 
         System.out.println("--------------------------------------------");
 
-        // ADIM 2: Hatalı Kart Testi (Eksik numara)
+        // ADIM 2: Hatalı Kart Testi
         System.out.println("--- Adım 2: Hatalı Kart Denemesi (Ödeme Reddedilmeli) ---");
 
         Customer musteri2 = new Customer(2, "Mehmet Bey", "555-999-8888");
-        System.out.println("Müşteri: " + musteri2.getName());
+        // Odayı tekrar boşa çıkaralım (manuel olarak) çünkü az önce tuttuk
+        luksOda.cancelReservation();
 
-        System.out.println(">> Mehmet Bey eksik numaralı (hatalı) kartla deniyor...");
+        Reservation rez2 = new Reservation(musteri2, luksOda, "03.01.2026", 2);
 
-        // Kart numarası hatalı olduğu için işlem başarısız olacak
-        new Reservation(musteri2, luksOda, "03.01.2026", 2, "123");
+        System.out.println(">> Mehmet Bey eksik numaralı kartla ödeme deniyor...");
+
+        // Kart numarası hatalı olduğu için checkOut içinde hata mesajı vermeli
+        rez2.checkOut("123");
     }
 
     // ----------------------------------------------------------------
-    // BÖLÜM 2: GENEL SİSTEM TESTİ
+    // BÖLÜM 2: GENEL SİSTEM TESTİ (FULL SENARYO)
     // ----------------------------------------------------------------
     public static void runIntegrationTests() {
-        System.out.println(">>> BÖLÜM 2: OTEL VE ÖDEME ENTEGRASYONU <<<");
+        System.out.println(">>> BÖLÜM 2: ODA SERVİSİ VE ENTEGRASYON <<<");
         System.out.println();
 
         // 1. Otelimi kuruyorum
@@ -79,27 +82,46 @@ public class Main {
         System.out.println(">> Otel ve Odalar Hazır.");
         otel.listAvailableRooms();
 
-        // 2. Müşteri Rezervasyonu (Başarılı)
-        System.out.println(">> Müşteri (Zeynep Kaya) Oda 100'ü kiralamak istiyor...");
-
+        // ---------------------------------------------------------
+        // SENARYO A: ODA SERVİSİ VE BAŞARILI KONAKLAMA
+        // ---------------------------------------------------------
+        System.out.println("\n--- Senaryo A: Rezervasyon ve Oda Servisi Siparişi---");
         Customer c = new Customer(99, "Zeynep Kaya", "0555-444-3322");
 
-        // ! Rezervasyonu 'rez' isminde bir değişkene atadım ki sonra iptal edebileyim.
-        Reservation rez = new Reservation(c, r1, "10.05.2026", 3, "1111222233334444");
+        // Kart no olmadan rezervasyon
+        Reservation rez = new Reservation(c, r1, "10.05.2026", 3);
 
-        // 3. Kontrol ediyorum (Oda 100 gitmiş olmalı)
-        System.out.println(">> GÜNCEL MÜSAİT ODA LİSTESİ (100 Numaralı oda gitmiş olmalı):");
-        otel.listAvailableRooms();
+        // YENİ: Oda Servisi Çağırılıyor 🍔
+        System.out.println("\n>> Müşteri acıktı, sipariş veriyor...");
+        MenuItem burger = new MenuItem("Cheese Burger", 250.0);
+        MenuItem kola = new MenuItem("Coca Cola", 50.0);
 
-        //İptal senaryosu
-        System.out.println("--------------------------------------------");
-        System.out.println(">> Zeynep Hanım vazgeçti, rezervasyonu İPTAL etmek istiyor...");
+        rez.addOrder(burger);
+        rez.addOrder(kola);
 
-        // Rezervasyon sınıfına yazdığım cancel metodunu çağırıyorum.
-        rez.cancel();
+        // Hesap kontrolü
+        System.out.println("\n>> Ara Hesap Kontrolü:");
+        System.out.println(rez.toString());
 
-        // 4. Final Kontrol (Oda 100 geri gelmiş olmalı)
-        System.out.println(">> Final Kontrol: Oda 100 listeye geri döndü mü?");
+        // Çıkış ve Ödeme
+        System.out.println("\n>> Tatil bitti, çıkış yapılıyor...");
+        rez.checkOut("1111222233334444");
+
+        // ---------------------------------------------------------
+        // SENARYO B: İPTAL İŞLEMİ
+        // ---------------------------------------------------------
+        System.out.println("\n--------------------------------------------");
+        System.out.println("--- Senaryo B: İptal Edilen Rezervasyon ---");
+
+        // Başka bir müşteri
+        Customer c2 = new Customer(101, "Ali Kahraman", "555-000-0000");
+        Reservation iptalRez = new Reservation(c2, r2, "20.06.2026", 2);
+
+        System.out.println(">> Ali Bey vazgeçti, rezervasyonu İPTAL ediyor...");
+        iptalRez.cancel(); // Ödeme alınmadan iptal edildi.
+
+        // Final Kontrol (Oda 105 boşa çıkmış olmalı)
+        System.out.println(">> Final Kontrol: Oda 105 listeye geri döndü mü?");
         otel.listAvailableRooms();
     }
 }
