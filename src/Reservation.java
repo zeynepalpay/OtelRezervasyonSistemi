@@ -54,6 +54,11 @@ public class Reservation {
         return roomPrice + foodPrice; // Oda + Yemek Toplamı
     }
 
+    // FileService (Dosya) sınıfının, fatura ismi oluştururken müşteri adına erişmesi gerekiyor.
+    public String getCustomerName() {
+        return customer.getName();
+    }
+
     // Çıkış yap ve Ödeme al.
     // Kart numarasını  müşteriden çıkarken istiyoruz.
     public void checkOut(String cardNumber) {
@@ -67,7 +72,13 @@ public class Reservation {
 
         if (odeme.processPayment()) {
             // Ödeme Başarılıysa
-            System.out.println("✅ Ödeme Başarılı! Faturanız e-posta adresinize gönderildi.");
+            System.out.println("✅ Ödeme Başarılı! E-faturanız hazırlanıyor...");
+
+            // --- YENİ KISIM: İşi FileService'e devrediyoruz ---
+            // 'this' diyerek rezervasyonun kendisini gönderiyoruz, o da faturayı basıyor.
+            FileService.writeInvoice(this);
+            // --------------------------------------------------
+
             System.out.println("👋 Bizi tercih ettiğiniz için teşekkür ederiz, yine bekleriz!");
 
             // Sadakat puanı dağıtımı
