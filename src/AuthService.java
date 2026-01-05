@@ -1,41 +1,52 @@
+import java.io.*;
 import java.util.ArrayList;
-/**
- * Kimlik Doğrulama Servisi.
- * Kullanıcı giriş işlemlerini ve kayıtlı kullanıcı listesini yönetir.
- */
-public class AuthService {
 
-    // Kayıtlı kullanıcıları tutan "Sanal Veritabanı" listemiz
+public class AuthService {
     private ArrayList<User> userList;
+    private final String FILE_PATH = "kullanicilar.txt";
 
     public AuthService() {
         this.userList = new ArrayList<>();
-
-        // --- ÖRNEK KULLANICILAR OLUŞTURUYORUZ ---
-
-        // 1. Yönetici (Admin)
-        // Kullanıcı Adı: admin, Şifre: 123
-        userList.add(new User("admin", "123", "ADMIN", "Sistem Yöneticisi"));
-
-        // 2. Müşteri (Customer)
-        // Kullanıcı Adı: zeynep, Şifre: 1234
-        userList.add(new User("zeynep", "1234", "CUSTOMER", "Zeynep Yildiz"));
-        userList.add(new User("tuğberk", "1234","CUSTOMER","Tuğberk Kocatekin"));
+        loadUsersFromFile();
     }
 
-    // --- GİRİŞ KONTROLÜ (LOGIN) ---
-    // Eğer kullanıcı adı ve şifre doğruysa, o User nesnesini geri döndürür.
-    // Yanlışsa 'null' (boş) döndürür.
-    public User login(String username, String password) {
-        for (User user : userList) {
-            // Hem kullanıcı adı hem şifre eşleşiyor mu?
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                System.out.println("✅ GİRİŞ BAŞARILI! Hoşgeldin, " + user.getFullName());
-                return user; // Giriş yapan kullanıcıyı sisteme bildiriyoruz
-            }
+    private void loadUsersFromFile() {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            System.out.println("⚠️ UYARI: kullanicilar.txt bulunamadı!");
+            userList.add(new User("admin", "123", "ADMIN", "Sistem Yoneticisi"));
+            return;
         }
 
-        // Döngü bitti ve kimse bulunamadıysa:
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                String[] data = line.split(",");
+                if (data.length == 4) {
+                    // DOSYA SIRALAMASI: admin, 123, İsim, Rol
+                    String uName = data[0].trim();
+                    String pass  = data[1].trim();
+                    String name  = data[2].trim();
+                    String role  = data[3].trim();
+
+                    // User Constructor (username, password, role, fullName)
+                    userList.add(new User(uName, pass, role, name));
+                }
+            }
+            System.out.println("✅ SİSTEM: " + userList.size() + " kullanıcı başarıyla çekildi.");
+        } catch (IOException e) {
+            System.out.println("❌ HATA: Dosya okuma hatası!");
+        }
+    }
+
+    public User login(String username, String password) {
+        for (User user : userList) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                System.out.println("✅ GİRİŞ BAŞARILI! Hoşgeldin, " + user.getFullName());
+                return user;
+            }
+        }
         System.out.println("❌ HATA: Kullanıcı adı veya şifre hatalı!");
         return null;
     }

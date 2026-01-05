@@ -4,46 +4,67 @@ import java.util.List;
 public class Hotel {
 
     private String name;
-    private List<Room> rooms; // Oteldeki tüm odaların tutulduğu liste.
+    private List<Room> rooms; // Oteldeki tüm odaların listesi
+    private List<Reservation> activeReservations; // Aktif rezervasyonların defteri
 
-    // Yapılan rezervasyonları sakladığımız liste (Rezervasyon Defteri)
-    // Oda servisi siparişi verirken "Bu oda kimin?" diye bakmak için lazım.
-    private List<Reservation> activeReservations;
-
-    // Kurucu Metot (Constructor)
     public Hotel(String name) {
         this.name = name;
         this.rooms = new ArrayList<>();
-        this.activeReservations = new ArrayList<>(); // Rezervasyon listesini başlatıyoruz
+        this.activeReservations = new ArrayList<>();
     }
 
-    // Otele yeni bir oda eklenmesini sağlayan metot
+    // Otele yeni oda ekleme metodu
     public void addRoom(Room room) {
         rooms.add(room);
     }
 
-    // Rezervasyonu deftere kaydeden metot
-    public void addReservation(Reservation rez) {
-        activeReservations.add(rez);
+    /**
+     * --- GÜVENLİ REZERVASYON METODU (Giriş Tarihi ve Gece Sayısı Dahil) ---
+     * Kullanıcıdan gelen tarih bilgisini parametre olarak alır.
+     */
+    public boolean makeReservation(int roomNumber, Customer customer, String checkInDate, int nights) {
+        Room selectedRoom = getRoom(roomNumber); // Önce odayı buluyoruz.
+
+        if (selectedRoom != null) {
+            // Oda müsait mi kontrolü
+            // Eğer isAvailable() false ise sistem işlemi burada durdurur.
+            if (!selectedRoom.isAvailable()) {
+                System.out.println("\n❌ DURDURULDU: " + roomNumber + " nolu oda zaten dolu!");
+                System.out.println("⚠️ Bu oda rezerve edildiği için başka bir işlem yapılamaz.");
+                return false;
+            }
+
+            // 2. ADIM: Odayı derhal "DOLU" yapıyoruz.
+            // Bu satır sayesinde oda, "Müsait Odalar Listesi"nden anında düşer.
+            selectedRoom.setAvailable(false);
+
+            // 3. ADIM: Rezervasyonu kullanıcının girdiği tarih ve gece sayısıyla kaydediyoruz.
+            Reservation newRez = new Reservation(customer, selectedRoom, checkInDate, nights);
+            activeReservations.add(newRez);
+
+            System.out.println("✅ SİSTEM: Oda " + roomNumber + ", " + checkInDate +
+                    " tarihi için başarıyla rezerve edildi.");
+            return true;
+        }
+        return false;
     }
 
-    // Main sınıfında "Hangi odada kim kalıyor?" diye bakmak için listeyi veriyoruz.
+    // Aktif rezervasyon listesini döndürür (Oda servisi vb. işlemler için)
     public List<Reservation> getReservations() {
         return activeReservations;
     }
 
-    // MÜŞTERİ İÇİN: Sadece müsait (boş) odaları bulup listeleyen metot
+    // MÜŞTERİ İÇİN: Sadece müsait (isAvailable = true) odaları listeler
     public void listAvailableRooms() {
         System.out.println();
         System.out.println("--- " + name + " : MÜSAİT ODALAR LİSTESİ ---");
-
         boolean found = false;
 
         for (Room oda : rooms) {
-            if (oda.isAvailable()) {
+            if (oda.isAvailable()) { // Sadece müsait olanlar
+                String tip = (oda instanceof DeluxeRoom ? "Deluxe" : "Standart");
                 System.out.println("- Oda No: " + oda.getRoomNumber() +
-                        " (" + (oda instanceof DeluxeRoom ? "Deluxe" : "Standart") + ")" +
-                        " -> Fiyat: " + oda.calculatePrice() + " TL");
+                        " (" + tip + ") -> Gecelik Fiyat: " + oda.calculatePrice() + " TL");
                 found = true;
             }
         }
@@ -54,29 +75,25 @@ public class Hotel {
         System.out.println("---------------------------------------------");
     }
 
-    // YÖNETİCİ İÇİN: Dolu veya boş fark etmeksizin TÜM odaları raporlar.
+    // YÖNETİCİ İÇİN Rapor
     public void listAllRooms() {
         System.out.println("\n📋 --- YÖNETİCİ RAPORU: TÜM ODALAR ---");
         System.out.println("----------------------------------------");
-
         for (Room room : rooms) {
             String durum = room.isAvailable() ? "✅ BOŞ" : "🔴 DOLU";
             String tip = (room instanceof DeluxeRoom) ? "Deluxe" : "Standart";
-
-            System.out.println(String.format("Oda No: %d | Tip: %-8s | Fiyat: %.1f TL | Durum: %s",
-                    room.getRoomNumber(), tip, room.calculatePrice(), durum));
+            System.out.println(String.format("Oda No: %d | Tip: %-8s | Durum: %s",
+                    room.getRoomNumber(), tip, durum));
         }
         System.out.println("----------------------------------------");
     }
 
-    // Müşteri "101 nolu odayı istiyorum" dediğinde o odayı bulup getiren metot.
     public Room getRoom(int roomNumber) {
         for (Room room : rooms) {
             if (room.getRoomNumber() == roomNumber) {
                 return room;
             }
         }
-        System.out.println("⚠️ HATA: " + roomNumber + " numaralı oda sistemde yok!");
         return null;
     }
 }
