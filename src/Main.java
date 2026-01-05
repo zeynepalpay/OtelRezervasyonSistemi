@@ -1,127 +1,79 @@
+import java.util.Scanner;
+
 public class Main {
-    //  ANA METOT
+
+    // Tüm sistemin erişebileceği (Global) değişkenler
+    private static Hotel hotel;
+    private static AuthService authService;
+    private static Scanner scanner;
+
     public static void main(String[] args) {
+        // 1. SİSTEM KURULUMU (Başlangıç verilerini yüklüyoruz)
+        setupSystem();
 
-        System.out.println("============================================");
-        System.out.println("=== SKYLINE HOTEL - SİSTEM KONTROLÜ ===");
-        System.out.println("============================================");
-        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("🏨 SKYLINE HOTEL REZERVASYON SİSTEMİ");
+        System.out.println("==========================================");
 
-        // 1. AŞAMA: Temel Ödeme ve Çıkış Testi
-        runUnitTests();
+        // 2. GİRİŞ EKRANI (LOGIN)
+        System.out.println("\nLütfen sisteme giriş yapınız.");
 
-        System.out.println();
-        System.out.println("********************************************");
-        System.out.println();
+        System.out.print("👤 Kullanıcı Adı: ");
+        String username = scanner.nextLine();
 
-        // 2. AŞAMA: Otel, Oda Servisi ve İptal Testi
-        runIntegrationTests();
+        System.out.print("🔑 Şifre: ");
+        String password = scanner.nextLine();
 
-        System.out.println();
-        System.out.println("=== TÜM İŞLEMLER SORUNSUZ TAMAMLANDI ===");
+        // AuthService üzerinden kontrol ediyoruz
+        User currentUser = authService.login(username, password);
+
+        if (currentUser != null) {
+            // --- GİRİŞ BAŞARILI ---
+            System.out.println("\n--------------------------------");
+            System.out.println("👋 Hoşgeldiniz, Sayın " + currentUser.getFullName());
+            System.out.println("🔰 Yetki: " + currentUser.getRole());
+            System.out.println("--------------------------------");
+
+            // Kullanıcının rolüne göre ilgili menüye yönlendir
+            if (currentUser.getRole().equals("ADMIN")) {
+                adminMenu();
+            } else {
+                customerMenu(currentUser);
+            }
+
+        } else {
+            // --- GİRİŞ BAŞARISIZ ---
+            System.out.println("\n🔴 HATA: Kullanıcı adı veya şifre yanlış!");
+            System.out.println("Sistem kapatılıyor...");
+        }
     }
 
-    // ----------------------------------------------------------------
-    // BÖLÜM 1: TEMEL KONTROLLER (Ödeme Sistemi Testi)
-    // ----------------------------------------------------------------
-    public static void runUnitTests() {
-        System.out.println(">>> BÖLÜM 1: ÇIKIŞ VE ÖDEME TESTİ <<<");
-        System.out.println();
+    // Sistemi başlatırken oteli, odaları ve kullanıcı servisini hazırlar
+    private static void setupSystem() {
+        scanner = new Scanner(System.in);
+        authService = new AuthService(); // Kullanıcı listesi yüklendi
+        hotel = new Hotel("Skyline Hotel");
 
-        // Odayı hazırlıyorum
-        DeluxeRoom luksOda = new DeluxeRoom(201, 1000.0);
-
-        // ADIM 1: Başarılı Ödeme Senaryosu
-        System.out.println("--- Adım 1: Rezervasyon ve Başarılı Çıkış ---");
-
-        Customer musteri1 = new Customer(1, "Şevval Yılmaz", "0553-123-4567");
-
-        // DİKKAT: Artık burada kart numarası vermiyoruz! Sadece odayı tutuyoruz.
-        Reservation rez1 = new Reservation(musteri1, luksOda, "2.01.2026", 5);
-
-        // Çıkış yaparken kartı veriyoruz
-        System.out.println(">> Şevval Hanım çıkış yapıyor...");
-        rez1.checkOut("1234123412341234"); // Geçerli kart
-
-        System.out.println("--------------------------------------------");
-
-        // ADIM 2: Hatalı Kart Testi
-        System.out.println("--- Adım 2: Hatalı Kart Denemesi (Ödeme Reddedilmeli) ---");
-
-        Customer musteri2 = new Customer(2, "Mehmet Bey", "555-999-8888");
-        // Odayı tekrar boşa çıkaralım (manuel olarak) çünkü az önce tuttuk
-        luksOda.cancelReservation();
-
-        Reservation rez2 = new Reservation(musteri2, luksOda, "03.01.2026", 2);
-
-        System.out.println(">> Mehmet Bey eksik numaralı kartla ödeme deniyor...");
-
-        // Kart numarası hatalı olduğu için checkOut içinde hata mesajı vermeli
-        rez2.checkOut("123");
+        // Otelin odalarını oluşturuyoruz
+        hotel.addRoom(new StandardRoom(101, 1000.0));
+        hotel.addRoom(new StandardRoom(102, 1000.0));
+        hotel.addRoom(new DeluxeRoom(201, 1500.0));
+        hotel.addRoom(new DeluxeRoom(202, 1500.0));
+        hotel.addRoom(new StandardRoom(303, 1000.0));
     }
 
-    // ----------------------------------------------------------------
-    // BÖLÜM 2: GENEL SİSTEM TESTİ (FULL SENARYO)
-    // ----------------------------------------------------------------
-    public static void runIntegrationTests() {
-        System.out.println(">>> BÖLÜM 2: ODA SERVİSİ VE ENTEGRASYON <<<");
-        System.out.println();
+    // Menü Taslakları
+    private static void adminMenu() {
+        System.out.println("\n🛠️ --- YÖNETİCİ PANELİ ---");
+        System.out.println("1. Tüm Odaları Listele");
+        System.out.println("2. Yeni Oda Ekle");
+        System.out.println("3. Sistemden Çıkış");
+    }
 
-        // 1. Otelimi kuruyorum
-        Hotel otel = new Hotel("Skyline Hotel");
-
-        // Odaları ekliyorum
-        Room r1 = new StandardRoom(100, 1000.0);
-        Room r2 = new StandardRoom(105, 1000.0);
-        Room r3 = new DeluxeRoom(500, 1000.0);
-
-        otel.addRoom(r1);
-        otel.addRoom(r2);
-        otel.addRoom(r3);
-
-        System.out.println(">> Otel ve Odalar Hazır.");
-        otel.listAvailableRooms();
-
-        // ---------------------------------------------------------
-        // SENARYO A: ODA SERVİSİ VE BAŞARILI KONAKLAMA
-        // ---------------------------------------------------------
-        System.out.println("\n--- Senaryo A: Rezervasyon ve Oda Servisi Siparişi---");
-        Customer c = new Customer(99, "Zeynep Kaya", "0555-444-3322");
-
-        // Kart no olmadan rezervasyon
-        Reservation rez = new Reservation(c, r1, "10.05.2026", 3);
-
-        // YENİ: Oda Servisi Çağırılıyor 🍔
-        System.out.println("\n>> Müşteri acıktı, sipariş veriyor...");
-        MenuItem burger = new MenuItem("Cheese Burger", 250.0);
-        MenuItem kola = new MenuItem("Coca Cola", 50.0);
-
-        rez.addOrder(burger);
-        rez.addOrder(kola);
-
-        // Hesap kontrolü
-        System.out.println("\n>> Ara Hesap Kontrolü:");
-        System.out.println(rez.toString());
-
-        // Çıkış ve Ödeme
-        System.out.println("\n>> Tatil bitti, çıkış yapılıyor...");
-        rez.checkOut("1111222233334444");
-
-        // ---------------------------------------------------------
-        // SENARYO B: İPTAL İŞLEMİ
-        // ---------------------------------------------------------
-        System.out.println("\n--------------------------------------------");
-        System.out.println("--- Senaryo B: İptal Edilen Rezervasyon ---");
-
-        // Başka bir müşteri
-        Customer c2 = new Customer(101, "Ali Kahraman", "555-000-0000");
-        Reservation iptalRez = new Reservation(c2, r2, "20.06.2026", 2);
-
-        System.out.println(">> Ali Bey vazgeçti, rezervasyonu İPTAL ediyor...");
-        iptalRez.cancel(); // Ödeme alınmadan iptal edildi.
-
-        // Final Kontrol (Oda 105 boşa çıkmış olmalı)
-        System.out.println(">> Final Kontrol: Oda 105 listeye geri döndü mü?");
-        otel.listAvailableRooms();
+    private static void customerMenu(User user) {
+        System.out.println("\n🏖️ --- MÜŞTERİ PANELİ ---");
+        System.out.println("1. Odaları Gör ve Rezervasyon Yap");
+        System.out.println("2. Rezervasyonlarım");
+        System.out.println("3. Çıkış Yap (Ödeme)");
     }
 }
