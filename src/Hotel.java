@@ -17,28 +17,54 @@ public class Hotel {
         rooms.add(room);
     }
 
-    // Oteldeki müsait (boş) odaları bulup listeleyen metot
+    // MÜŞTERİ İÇİN: Sadece müsait (boş) odaları bulup listeleyen metot
     public void listAvailableRooms() {
         System.out.println();
         System.out.println("--- " + name + " : MÜSAİT ODALAR LİSTESİ ---");
 
         boolean found = false; // Başlangıçta hiç boş oda yokmuş varsayılır.
 
-        // Odalar listesindeki (rooms) her bir oda üzerinde döngü kurulur.
         for (Room oda : rooms) {
-            // Reservable arayüzünden gelen metot ile odanın müsaitlik durumu kontrol edilir.
             if (oda.isAvailable()) {
                 System.out.println("- Oda No: " + oda.getRoomNumber() +
                         " (" + (oda instanceof DeluxeRoom ? "Deluxe" : "Standart") + ")" +
                         " -> Fiyat: " + oda.calculatePrice() + " TL");
-                found = true; // Eğer müsait bir oda bulunursa bu değişken true yapılır.
+                found = true;
             }
         }
 
-        // Döngü tamamlandığında eğer hiç oda bulunamadıysa kullanıcıya bilgi verilir.
         if (!found) {
             System.out.println("Üzgünüz, şu an hiç boş odamız kalmadı!");
         }
         System.out.println("---------------------------------------------");
+    }
+
+    // YÖNETİCİ İÇİN: Dolu veya boş fark etmeksizin TÜM odaları raporlar.
+    public void listAllRooms() {
+        System.out.println("\n📋 --- YÖNETİCİ RAPORU: TÜM ODALAR ---");
+        System.out.println("----------------------------------------");
+
+        for (Room room : rooms) {
+            // Odanın durumuna göre yanına yazı ve emoji ekliyoruz
+            String durum = room.isAvailable() ? "✅ BOŞ" : "🔴 DOLU";
+            String tip = (room instanceof DeluxeRoom) ? "Deluxe" : "Standart";
+
+            // Formatlı yazdırma (Daha düzgün görünür)
+            System.out.println(String.format("Oda No: %d | Tip: %-8s | Fiyat: %.1f TL | Durum: %s",
+                    room.getRoomNumber(), tip, room.calculatePrice(), durum));
+        }
+        System.out.println("----------------------------------------");
+    }
+
+    // Müşteri "101 nolu odayı istiyorum" dediğinde o odayı bulup getiren metot.
+    public Room getRoom(int roomNumber) {
+        for (Room room : rooms) {
+            if (room.getRoomNumber() == roomNumber) {
+                return room;
+            }
+        }
+        // Eğer döngü biter ve oda bulunamazsa:
+        System.out.println("⚠️ HATA: " + roomNumber + " numaralı oda sistemde yok!");
+        return null;
     }
 }
