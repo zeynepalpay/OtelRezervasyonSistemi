@@ -20,7 +20,7 @@ public class AuthService {
         // 2. Müşteri (Customer)
         // Kullanıcı Adı: zeynep, Şifre: 1234
         userList.add(new User("zeynep", "1234", "CUSTOMER", "Zeynep Yildiz"));
-
+        userList.add(new User("tuğberk", "1234","CUSTOMER","Tuğberk Kocatekin"));
     }
 
     // --- GİRİŞ KONTROLÜ (LOGIN) ---
