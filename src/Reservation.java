@@ -1,11 +1,11 @@
 import java.util.ArrayList;
+
 /**
  * Rezervasyon işlemlerini yönettiğim sınıf.
  * Değişkenler 'final' yapılarak kod daha güvenli hale getirildi.
  */
 public class Reservation {
 
-    // Değişiklik 1: Değişkenler 'final' yapıldı.
     private final Customer customer;
     private final Room room;
     private final String checkInDate;
@@ -49,6 +49,13 @@ public class Reservation {
         return customer.getName();
     }
 
+    //  (Oda Servisi ve Kontroller için gerekli metot) ---
+    // Bu metot sayesinde dışarıdan "Bu rezervasyon hangi odaya ait?" diye sorabiliyoruz.
+    public Room getRoom() {
+        return room;
+    }
+    // ------------------------------------------------------------------
+
     // Çıkış yap ve Ödeme al
     public void checkOut(String cardNumber) {
         double totalAmount = getTotalPrice();
@@ -83,7 +90,6 @@ public class Reservation {
         double roomCost = room.calculatePrice() * nightCount;
         double extrasCost = getTotalPrice() - roomCost;
 
-        // Değişiklik 2: checkInDate (Tarih) buraya eklendi, artık "kullanılmıyor" uyarısı vermeyecek.S
         return "REZERVASYON DURUMU:\n" +
                 "- Giriş Tarihi: " + checkInDate + "\n" +
                 "- Müşteri: " + customer.getName() + "\n" +

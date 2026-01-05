@@ -64,7 +64,7 @@ public class Main {
 
     // --- MENÜLER ---
 
-    // Yönetici paneli
+    // YÖNETİCİ MENÜSÜ
     private static void adminMenu() {
         boolean exit = false;
 
@@ -75,7 +75,6 @@ public class Main {
             System.out.println("3. 🚪 Çıkış");
             System.out.print("Seçiminiz: ");
 
-            // Hatalı giriş kontrolü (Harf girerse patlamasın diye)
             if (!scanner.hasNextInt()) {
                 System.out.println("⚠️ Lütfen geçerli bir sayı giriniz!");
                 scanner.next();
@@ -87,19 +86,14 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    // Hotel sınıfına yeni eklediğim "Tümünü Listele" metodu
                     hotel.listAllRooms();
                     break;
-
                 case 2:
                     System.out.println("\n--- YENİ ODA EKLEME SİHİRBAZI ---");
-
                     System.out.print("Oda Numarası: ");
                     int roomNum = scanner.nextInt();
-
                     System.out.print("Gecelik Fiyat: ");
                     double price = scanner.nextDouble();
-
                     System.out.println("Oda Tipi Seçiniz:");
                     System.out.println("1. Standart Oda");
                     System.out.println("2. Deluxe Oda (%20 Hizmet bedelli)");
@@ -115,19 +109,17 @@ public class Main {
                         System.out.println("❌ Hatalı seçim yaptınız, oda eklenemedi.");
                     }
                     break;
-
                 case 3:
                     System.out.println("Yönetici panelinden güvenli çıkış yapılıyor...");
                     exit = true;
                     break;
-
                 default:
                     System.out.println("Geçersiz seçim!");
             }
         }
     }
 
-    // MÜŞTERİ MENÜSÜ
+    // MÜŞTERİ MENÜSÜ (GÜNCELLENDİ: Çıkışta Puan Gösterimi Eklendi)
     private static void customerMenu(User user) {
         boolean exit = false;
 
@@ -135,7 +127,8 @@ public class Main {
             System.out.println("\n🏖️ --- MÜŞTERİ PANELİ ---");
             System.out.println("1. 🏨 Müsait Odaları Listele");
             System.out.println("2. 📅 Rezervasyon Yap");
-            System.out.println("3. 🚪 Çıkış (Sistemden Ayrıl)");
+            System.out.println("3. 🍔 Oda Servisi (Yemek Siparişi)");
+            System.out.println("4. 🚪 Otelden Çıkış ve Ödeme"); // Menü ismi güncellendi
             System.out.print("Seçiminiz: ");
 
             if (!scanner.hasNextInt()) {
@@ -153,6 +146,7 @@ public class Main {
                     break;
 
                 case 2:
+                    // --- REZERVASYON YAPMA ---
                     System.out.println("\n--- REZERVASYON İŞLEMİ ---");
                     System.out.print("İstediğiniz Oda Numarası: ");
                     int roomNum = scanner.nextInt();
@@ -172,8 +166,10 @@ public class Main {
                         String phone = scanner.nextLine();
 
                         Customer customer = new Customer(100, user.getFullName(), phone);
-
                         Reservation rez = new Reservation(customer, selectedRoom, date, nights);
+
+                        // Rezervasyonu otelin defterine kaydediyoruz
+                        hotel.addReservation(rez);
 
                         System.out.println("\n✅ İŞLEM TAMAM! Rezervasyonunuz alındı.");
                         System.out.println(rez.toString());
@@ -181,12 +177,76 @@ public class Main {
                     break;
 
                 case 3:
-                    System.out.println("Çıkış yapılıyor... İyi günler!");
-                    exit = true;
+                    // --- ODA SERVİSİ ---
+                    System.out.println("\n🍔 --- ODA SERVİSİ ---");
+                    System.out.print("Hangi odada kalıyorsunuz? (Oda No): ");
+                    int myRoomNum = scanner.nextInt();
+
+                    Reservation foundRez = null;
+
+                    for (Reservation r : hotel.getReservations()) {
+                        if (r.getRoom().getRoomNumber() == myRoomNum) {
+                            foundRez = r;
+                            break;
+                        }
+                    }
+
+                    if (foundRez != null) {
+                        System.out.println("Merhaba " + foundRez.getCustomerName() + ", ne arzu edersiniz?");
+                        System.out.println("1. Hamburger (250 TL)");
+                        System.out.println("2. Pizza (300 TL)");
+                        System.out.println("3. Kola (50 TL)");
+                        System.out.println("4. Türk Kahvesi (80 TL)");
+                        System.out.print("Seçiminiz: ");
+
+                        int foodChoice = scanner.nextInt();
+
+                        if (foodChoice == 1) foundRez.addOrder(new MenuItem("Hamburger", 250));
+                        else if (foodChoice == 2) foundRez.addOrder(new MenuItem("Pizza", 300));
+                        else if (foodChoice == 3) foundRez.addOrder(new MenuItem("Kola", 50));
+                        else if (foodChoice == 4) foundRez.addOrder(new MenuItem("Türk Kahvesi", 80));
+                        else System.out.println("❌ Geçersiz ürün seçimi!");
+
+                        System.out.println(">> Sipariş mutfağa iletildi. Çıkışta faturanıza yansıtılacaktır.");
+                    } else {
+                        System.out.println("❌ HATA: " + myRoomNum + " numaralı odada aktif bir rezervasyon bulunamadı.");
+                        System.out.println("Lütfen önce rezervasyon yapınız.");
+                    }
+                    break;
+
+                case 4:
+                    //  ÇIKIŞ VE PUAN HESAPLAMA ---
+                    System.out.println("\n🚪 --- OTELDEN ÇIKIŞ İŞLEMİ ---");
+                    System.out.print("Lütfen Oda Numaranızı Giriniz: ");
+                    int outRoomNum = scanner.nextInt();
+                    scanner.nextLine(); // Buffer temizliği
+
+                    // 1. Odaya ait rezervasyonu buluyoruz
+                    Reservation checkoutRez = null;
+                    for (Reservation r : hotel.getReservations()) {
+                        if (r.getRoom().getRoomNumber() == outRoomNum) {
+                            checkoutRez = r;
+                            break;
+                        }
+                    }
+
+                    if (checkoutRez != null) {
+                        // 2. Fiyatı gösterip ödeme alıyoruz
+                        System.out.println(">> Toplam Hesap: " + checkoutRez.getTotalPrice() + " TL");
+                        System.out.print("Ödeme için Kart Numarası (16 Hane): ");
+                        String cardNo = scanner.nextLine();
+
+                        // checkOut metodu çağrılınca ekrana PUAN mesajı da otomatik gelecek
+                        checkoutRez.checkOut(cardNo);
+
+                        exit = true; // İşlem bitti, menüden çık
+                    } else {
+                        System.out.println("❌ HATA: Bu numarada çıkış yapacak bir müşteri bulunamadı!");
+                    }
                     break;
 
                 default:
-                    System.out.println("Geçersiz seçim, lütfen 1-3 arası bir sayı girin.");
+                    System.out.println("Geçersiz seçim, lütfen 1-4 arası bir sayı girin.");
             }
         }
     }

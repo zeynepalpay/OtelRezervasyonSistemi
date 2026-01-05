@@ -6,10 +6,15 @@ public class Hotel {
     private String name;
     private List<Room> rooms; // Oteldeki tüm odaların tutulduğu liste.
 
+    // Yapılan rezervasyonları sakladığımız liste (Rezervasyon Defteri)
+    // Oda servisi siparişi verirken "Bu oda kimin?" diye bakmak için lazım.
+    private List<Reservation> activeReservations;
+
     // Kurucu Metot (Constructor)
     public Hotel(String name) {
         this.name = name;
-        this.rooms = new ArrayList<>(); // Oda listesi burada başlatılır (initialize edilir).
+        this.rooms = new ArrayList<>();
+        this.activeReservations = new ArrayList<>(); // Rezervasyon listesini başlatıyoruz
     }
 
     // Otele yeni bir oda eklenmesini sağlayan metot
@@ -17,12 +22,22 @@ public class Hotel {
         rooms.add(room);
     }
 
+    // Rezervasyonu deftere kaydeden metot
+    public void addReservation(Reservation rez) {
+        activeReservations.add(rez);
+    }
+
+    // Main sınıfında "Hangi odada kim kalıyor?" diye bakmak için listeyi veriyoruz.
+    public List<Reservation> getReservations() {
+        return activeReservations;
+    }
+
     // MÜŞTERİ İÇİN: Sadece müsait (boş) odaları bulup listeleyen metot
     public void listAvailableRooms() {
         System.out.println();
         System.out.println("--- " + name + " : MÜSAİT ODALAR LİSTESİ ---");
 
-        boolean found = false; // Başlangıçta hiç boş oda yokmuş varsayılır.
+        boolean found = false;
 
         for (Room oda : rooms) {
             if (oda.isAvailable()) {
@@ -45,11 +60,9 @@ public class Hotel {
         System.out.println("----------------------------------------");
 
         for (Room room : rooms) {
-            // Odanın durumuna göre yanına yazı ve emoji ekliyoruz
             String durum = room.isAvailable() ? "✅ BOŞ" : "🔴 DOLU";
             String tip = (room instanceof DeluxeRoom) ? "Deluxe" : "Standart";
 
-            // Formatlı yazdırma (Daha düzgün görünür)
             System.out.println(String.format("Oda No: %d | Tip: %-8s | Fiyat: %.1f TL | Durum: %s",
                     room.getRoomNumber(), tip, room.calculatePrice(), durum));
         }
@@ -63,7 +76,6 @@ public class Hotel {
                 return room;
             }
         }
-        // Eğer döngü biter ve oda bulunamazsa:
         System.out.println("⚠️ HATA: " + roomNumber + " numaralı oda sistemde yok!");
         return null;
     }
