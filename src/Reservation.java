@@ -1,29 +1,23 @@
-import java.util.ArrayList; // Listeleri kullanabilmek için bu kütüphaneyi ekledik.
-
+import java.util.ArrayList;
 /**
  * Rezervasyon işlemlerini yönettiğim sınıf.
- * Bir Müşteri (Customer) ile bir Odayı (Room) ilişkilendirerek rezervasyon kaydı oluşturur.
- * Ayrıca kaç gece kalacağı bilgisini ve Oda Servisi siparişlerini tutar.
+ * Değişkenler 'final' yapılarak kod daha güvenli hale getirildi.
  */
 public class Reservation {
 
-    private Customer customer;
-    private Room room;
-    private String checkInDate;
-    private int nightCount;
-
-    //  Müşterinin yediği yemekleri/siparişleri tutan liste
-    private ArrayList<MenuItem> orders;
+    // Değişiklik 1: Değişkenler 'final' yapıldı.
+    private final Customer customer;
+    private final Room room;
+    private final String checkInDate;
+    private final int nightCount;
+    private final ArrayList<MenuItem> orders;
 
     // Kurucu Metot (Constructor)
-    // Not! : Kart numarasını burada istemiyoruz. Ödemeyi çıkışta (Check-Out) alacağız.
     public Reservation(Customer customer, Room room, String checkInDate, int nightCount) {
         this.customer = customer;
         this.room = room;
         this.checkInDate = checkInDate;
         this.nightCount = nightCount;
-
-        // Sipariş listesini içi boş olarak başlatıyoruz
         this.orders = new ArrayList<>();
 
         // Odayı sistemde "Dolu" olarak işaretliyoruz
@@ -34,68 +28,54 @@ public class Reservation {
     }
 
     // ---Oda Servisi Siparişi---
-    // Müşteri hamburger, kola vb. istediğinde bu metodu kullanacağız.
     public void addOrder(MenuItem item) {
-        orders.add(item); // Siparişi listeye ekle
+        orders.add(item);
         System.out.println("🍔 ODA SERVİSİ: " + item.getName() + " sipariş edildi. (+ " + item.getPrice() + " TL)");
     }
 
     // ---Güncel Fiyat Hesaplama---
-    // Sadece oda fiyatını değil, yenilen yemeklerin parasını da topluyoruz.
     public double getTotalPrice() {
-        double roomPrice = room.calculatePrice() * nightCount; // Oda Ücreti
-
+        double roomPrice = room.calculatePrice() * nightCount;
         double foodPrice = 0;
-        // Döngü ile sipariş listesindeki (orders) tüm yemeklerin fiyatını topluyoruz
+
         for (MenuItem item : orders) {
             foodPrice += item.getPrice();
         }
-
-        return roomPrice + foodPrice; // Oda + Yemek Toplamı
+        return roomPrice + foodPrice;
     }
 
-    // FileService (Dosya) sınıfının, fatura ismi oluştururken müşteri adına erişmesi gerekiyor.
+    // Fatura işlemleri için gerekli
     public String getCustomerName() {
         return customer.getName();
     }
 
-    // Çıkış yap ve Ödeme al.
-    // Kart numarasını  müşteriden çıkarken istiyoruz.
+    // Çıkış yap ve Ödeme al
     public void checkOut(String cardNumber) {
         double totalAmount = getTotalPrice();
 
         System.out.println("\n--- ÇIKIŞ İŞLEMİ (CHECK-OUT) ---");
         System.out.println(">> Toplam Borcunuz: " + totalAmount + " TL");
 
-        // Ödeme sistemini çağırıyoruz
         Payment odeme = new Payment(totalAmount, customer.getName(), cardNumber);
 
         if (odeme.processPayment()) {
-            // Ödeme Başarılıysa
             System.out.println("✅ Ödeme Başarılı! E-faturanız hazırlanıyor...");
 
-            // --- YENİ KISIM: İşi FileService'e devrediyoruz ---
-            // 'this' diyerek rezervasyonun kendisini gönderiyoruz, o da faturayı basıyor.
             FileService.writeInvoice(this);
-            // --------------------------------------------------
 
             System.out.println("👋 Bizi tercih ettiğiniz için teşekkür ederiz, yine bekleriz!");
 
-            // Sadakat puanı dağıtımı
             int kazanilanPuan = nightCount * 10;
             customer.addLoyaltyPoints(kazanilanPuan);
         } else {
-            // Ödeme Başarısızsa (Kibar Uyarı)
             System.out.println("❌ Ödeme İşlemi BAŞARISIZ! (Yetersiz Bakiye veya Hatalı Kart)");
-            System.out.println("⚠️ Lütfen geçerli bir kart ile tekrar deneyiniz veya resepsiyonla görüşünüz.");
+            System.out.println("⚠️ Lütfen geçerli bir kart ile tekrar deneyiniz.");
         }
     }
 
-    // Rezervasyon İptali
-    // İptal durumunda odayı tekrar boşa çıkarıyoruz.
     public void cancel() {
         room.cancelReservation();
-        System.out.println("ℹ️ Rezervasyon iptal edildi ve oda tekrar satışa açıldı.");
+        System.out.println("ℹ️ Rezervasyon iptal edildi.");
     }
 
     @Override
@@ -103,7 +83,9 @@ public class Reservation {
         double roomCost = room.calculatePrice() * nightCount;
         double extrasCost = getTotalPrice() - roomCost;
 
+        // Değişiklik 2: checkInDate (Tarih) buraya eklendi, artık "kullanılmıyor" uyarısı vermeyecek.S
         return "REZERVASYON DURUMU:\n" +
+                "- Giriş Tarihi: " + checkInDate + "\n" +
                 "- Müşteri: " + customer.getName() + "\n" +
                 "- Oda No: " + room.getRoomNumber() + "\n" +
                 "- Konaklama Ücreti: " + roomCost + " TL\n" +
