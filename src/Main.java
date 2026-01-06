@@ -43,11 +43,18 @@ public class Main {
         authService = new AuthService();
         hotel = new Hotel("Skyline Hotel");
 
-        hotel.addRoom(new StandardRoom(101, 1000.0));
-        hotel.addRoom(new StandardRoom(102, 1000.0));
-        hotel.addRoom(new DeluxeRoom(201, 1500.0));
-        hotel.addRoom(new DeluxeRoom(202, 1500.0));
-        hotel.addRoom(new StandardRoom(303, 1000.0));
+        // --- DOSYADAN YÜKLEME ---
+        hotel.loadRoomsFromFile();
+
+        // Eğer dosya boşsa veya ilk kez çalışıyorsa varsayılan odaları ekle
+        if (hotel.getRoom(101) == null) {
+            hotel.addRoom(new StandardRoom(101, 1000.0));
+            hotel.addRoom(new StandardRoom(102, 1000.0));
+            hotel.addRoom(new DeluxeRoom(201, 1500.0));
+            hotel.addRoom(new DeluxeRoom(202, 1500.0));
+            hotel.addRoom(new StandardRoom(303, 1000.0));
+            System.out.println(">> Sistem: Varsayılan odalar oluşturuldu.");
+        }
     }
 
     private static void adminMenu() {
@@ -77,13 +84,14 @@ public class Main {
                     int roomNum = scanner.nextInt();
                     System.out.print("Gecelik Fiyat: ");
                     double price = scanner.nextDouble();
-                    System.out.println("1: Standart, 2: Deluxe");
+                    System.out.print("1: Standart, 2: Deluxe - Seçiminiz: ");
                     int type = scanner.nextInt();
                     scanner.nextLine();
 
                     if (type == 1) hotel.addRoom(new StandardRoom(roomNum, price));
                     else hotel.addRoom(new DeluxeRoom(roomNum, price));
-                    System.out.println("✅ Oda başarıyla eklendi.");
+
+                    System.out.println("✅ Oda başarıyla eklendi ve dosyaya kaydedildi.");
                     break;
                 case 3:
                     exit = true;
@@ -118,13 +126,12 @@ public class Main {
                     break;
 
                 case 2:
-                    // --- REZERVASYON İŞLEMİ
                     System.out.println("\n--- REZERVASYON İŞLEMİ ---");
                     hotel.listAvailableRooms();
 
                     System.out.print("İstediğiniz Oda Numarası: ");
                     if (!scanner.hasNextInt()) { scanner.nextLine(); break; }
-                    int roomNum = scanner.nextInt();
+                    int rNo = scanner.nextInt();
                     scanner.nextLine();
 
                     System.out.print("Giriş Tarihi (Örn: 15.01.2026): ");
@@ -138,12 +145,12 @@ public class Main {
                     Customer customer = new Customer(100, user.getFullName(), "İletişim Bilgisi Yok");
 
                     // Hotel metoduna artık tarihi de gönderiyoruz
-                    boolean basariliMi = hotel.makeReservation(roomNum, customer, checkInDate, nights);
+                    boolean basariliMi = hotel.makeReservation(rNo, customer, checkInDate, nights);
 
                     if (basariliMi) {
                         System.out.println("✨ Rezervasyonunuz " + checkInDate + " tarihi için onaylandı!");
                     } else {
-                        System.out.println("⚠️ Hata: Seçtiğiniz oda dolmuş olabilir veya mevcut değil.");
+                        System.out.println("⚠️ Hata: Seçtiğiniz oda dolmuş olabilir.");
                     }
                     break;
 
@@ -201,6 +208,12 @@ public class Main {
                         String cardNo = scanner.nextLine();
 
                         checkoutRez.checkOut(cardNo);
+
+                        // ÖDEMEDEN SONRA ODAYI BOŞALT VE DOSYAYI GÜNCELLE
+                        checkoutRez.getRoom().setAvailable(true);
+                        hotel.saveRoomsToFile();
+
+                        System.out.println("✅ Çıkış işlemi tamamlandı, oda artık boştur.");
                         exit = true;
                     } else {
                         System.out.println("❌ HATA: Çıkış yapılacak rezervasyon bulunamadı!");
