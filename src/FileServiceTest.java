@@ -2,7 +2,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import java.io.File;
 import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * Otelimizin fatura kesme sistemini (File I/O) test ettiğim sınıftır.
+ * Amacım; bir müşteri otelden ayrılırken ona özel hazırlanan .txt faturasının
+ * hem gerçekten oluşup oluşmadığını hem de içinin dolu olduğunu kontrol etmektir.
+ */
 class FileServiceTest {
 
     private String generatedFileName = "fatura_MustafaAlkan.txt";
@@ -25,9 +29,14 @@ class FileServiceTest {
         assertTrue(file.length() > 0, "HATA: Fatura dosyası boş!");
     }
 
+    /**
+     * Her testten sonra otomatik çalışan temizlik metodumdur.
+     * Test sırasında oluşan sahte fatura dosyasını silerek proje klasörümüzün
+     * gereksiz dosyalarla kirlenmesini engeller.
+     */
     @AfterEach
     void tearDown() {
-        // Test bittikten sonra oluşan sahte faturayı sil ki klasör kirlenmesin
+        // Test bittikten sonra oluşan sahte faturayı siliyoruz ki klasör kirlenmesin
         File file = new File(generatedFileName);
          if (file.exists()) {
             file.delete();

@@ -1,6 +1,7 @@
 /**
  * Müşteri bilgilerini tutan sınıf.
  * Veri güvenliğini sağlamak için (Encapsulation) değişkenleri private yaptım.
+ *  Ayrıca sadakat puanı sistemiyle müşterilerimize her konaklamada puan kazandırıyoruz.
  */
 public class Customer {
 
@@ -13,7 +14,7 @@ public class Customer {
     // İletişim numarası
     private String phoneNumber;
 
-    // Sadakat Puanı(yeni ekledim)
+    // Sadakat Puanı
     private int loyaltyPoints;
 
     // Kurucu Metot (Constructor)
@@ -24,7 +25,7 @@ public class Customer {
         this.loyaltyPoints = 0; // Yeni müşteri her zaman 0 puanla başlar.
     }
 
-    // --- Getter Metotları ---
+    // --- Getter Metotları: Private değişkenlere güvenli erişim sağlar---
 
     public int getId() {
         return id;
@@ -38,19 +39,30 @@ public class Customer {
         return phoneNumber;
     }
 
-    // Yeni metot: Puanı Okuma
+    /**
+     * Müşterinin şu ana kadar kaç puan biriktirdiğini öğrenmemizi sağlar.
+     * @return Mevcut sadakat puanı
+     */
     public int getLoyaltyPoints() {
+
         return loyaltyPoints;
     }
 
-    // Yeni metot: Puan Ekleme İşlemi
-    // Bu metodu Rezervasyon sınıfından çağıracağım.
+    /**
+     * Müşteri otelden çıkış yaptığında (Check-out), kazandığı puanı hesabına ekleyen metot.
+     * Bu metot Rezervasyon sınıfı üzerinden otomatik çağrılır.
+     * @param points Eklenmek istenen puan miktarı
+     */
     public void addLoyaltyPoints(int points) {
         this.loyaltyPoints += points;
         System.out.println("🌟 SİSTEM MESAJI: " + this.name + " hesabına " + points + " sadakat puanı yüklendi.");
         System.out.println("   -> Güncel Toplam Puan: " + this.loyaltyPoints);
     }
 
+    /**
+     * Müşteri bilgilerini tek bir satırda, okunabilir bir özet halinde döndürür.
+     * @return Müşteri bilgilerinin metin hali
+     */
     @Override
     public String toString() {
         return "Müşteri Bilgisi -> ID: " + id + " | Ad: " + name +

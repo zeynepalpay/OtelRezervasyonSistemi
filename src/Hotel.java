@@ -1,7 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
-
+/**
+ * Otelimizin tüm operasyonlarını yöneten ana yönetim merkezidir.
+ * Odaların listesini tutar, rezervasyon işlemlerini yapar ve verilerin
+ * 'odalar.txt' dosyasında kalıcı olarak saklanmasını sağlar.
+ */
 public class Hotel {
 
     private String name;
@@ -9,13 +13,21 @@ public class Hotel {
     private List<Reservation> activeReservations; // Aktif rezervasyonların defteri
     private final String FILE_NAME = "odalar.txt"; // Odaların tutulduğu dosya
 
+    /**
+     * Otel nesnesini başlatan kurucu metot.
+     * @param name Otelin tabelasında görünecek isim.
+     */
     public Hotel(String name) {
         this.name = name;
         this.rooms = new ArrayList<>();
         this.activeReservations = new ArrayList<>();
     }
 
-    // --- DOSYADAN OKUMA METODU ---
+    /**
+     * Program açıldığında 'odalar.txt' dosyasındaki verileri okur.
+     * Bu metot sayesinde programı kapatıp açsak bile odaların fiyatları,
+     * tipleri ve doluluk durumları geri yüklenir.
+     */
     public void loadRoomsFromFile() {
         rooms.clear();
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
@@ -46,8 +58,11 @@ public class Hotel {
             System.out.println("❌ HATA: Odalar yüklenirken bir sorun oluştu: " + e.getMessage());
         }
     }
-
-    // --- DOSYAYA KAYDETME METODU ---
+    /**
+     * Mevcut oda listesindeki tüm güncel bilgileri 'odalar.txt' dosyasına yazar.
+     * Bu işlem verilerin kalıcı olmasını sağlar; yani bir oda dolduğunda
+     * bu bilgi anında dosyaya işlenir.
+     */
     public void saveRoomsToFile() {
         try (PrintWriter pw = new PrintWriter(new FileWriter(FILE_NAME))) {
             for (Room room : rooms) {
@@ -68,7 +83,7 @@ public class Hotel {
     }
 
     /**
-     * --- GÜVENLİ REZERVASYON METODU (Dosya Güncelleme Dahil) ---
+     * --- GÜVENLİ REZERVASYON METODU  ---
      */
     public boolean makeReservation(int roomNumber, Customer customer, String checkInDate, int nights) {
         Room selectedRoom = getRoom(roomNumber);
@@ -79,7 +94,7 @@ public class Hotel {
                 return false;
             }
 
-            // Odayı kilitliyoruz
+            // Odayı sistemde rezerve ediyoruz
             selectedRoom.setAvailable(false);
 
             Reservation newRez = new Reservation(customer, selectedRoom, checkInDate, nights);
@@ -122,7 +137,11 @@ public class Hotel {
                     room.getRoomNumber(), tip, durum));
         }
     }
-
+    /**
+     * Oda numarasına göre oda listesinde arama yapar.
+     * @param roomNumber Aranacak oda numarası.
+     * @return Bulunursa oda nesnesini, bulunamazsa null döner.
+     */
     public Room getRoom(int roomNumber) {
         for (Room room : rooms) {
             if (room.getRoomNumber() == roomNumber) return room;

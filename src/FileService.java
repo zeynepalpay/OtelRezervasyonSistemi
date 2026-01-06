@@ -2,14 +2,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Dosya işlemlerini (File I/O) yönettiğim sınıf.
- * Rezervasyon bittikten sonra fatura bilgilerini bir metin dosyasına (.txt) kaydeder.
- * Single Responsibility (Tek Sorumluluk) prensibine uymak için bu işlemi ayrı bir sınıfta yaptım.
+ * Otelimizin dosya işlemlerini (File I/O) yönettiğim yardımcı sınıftır.
+ * Temel görevi; rezervasyon işlemi bittiğinde fatura detaylarını bir .txt dosyasına kaydetmektir.
+ * Kodun karmaşıklaşmaması için "Single Responsibility" prensibine uygun olarak bu işi ayrı bir sınıfta topladım.
  */
 public class FileService {
 
-    // Fatura yazdırma işlemini yapan metot.
-    // 'static' olarak tanımladım, böylece her seferinde 'new FileService()' diyerek nesne oluşturmama gerek kalmaz.
+    /**
+     * Tamamlanmış bir rezervasyonun tüm detaylarını alarak kişiye özel bir fatura dosyası oluşturur.
+     * Bu metot 'static' olduğu için sınıfı 'new' yapmadan, direkt dosya ismiyle çağrılabilir.
+     * * @param reservation Faturası kesilecek olan rezervasyon nesnesi (Müşteri, oda ve yemek bilgileri buradadır).
+     */
     public static void writeInvoice(Reservation reservation) {
 
         // 1. Dosya ismini oluşturuyorum.

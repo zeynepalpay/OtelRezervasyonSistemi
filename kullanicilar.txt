@@ -3,4 +3,4 @@ user,123,Zeynep Yildiz,CUSTOMER
 tuğberk,123,Tuğberk Kocatekin,CUSTOMER
 zeynep,123,Zeynep Alpay,CUSTOMER
 şevval,123,Şevval Yildiz,CUSTOMER
-gülbahar,123,Gülbahar Doğan,CUSTOMERS
+gülbahar,123,Gülbahar Doğan,CUSTOMER

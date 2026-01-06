@@ -1,8 +1,9 @@
 import java.util.ArrayList;
 
 /**
- * Rezervasyon işlemlerini yönettiğim sınıf.
- * Değişkenler 'final' yapılarak kod daha güvenli hale getirildi.
+ * Müşteri, oda ve hizmet bilgilerini bir araya getirerek konaklama sürecini yöneten sınıftır.
+ * Fiyat hesaplaması yapar, siparişleri tutar ve çıkışta fatura kesilmesini sağlar.
+ * Değişknler final yapılarak kod daha güvenli hale getirildi.
  */
 public class Reservation {
 

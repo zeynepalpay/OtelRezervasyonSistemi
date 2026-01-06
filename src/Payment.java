@@ -1,17 +1,30 @@
+/**
+ * Otel ödeme işlemlerini simüle eden sınıftır.
+ * Müşterinin kredi kartı bilgilerini doğrular ve ödemenin
+ * başarıyla alınıp alınmadığını kontrol eder.
+ */
 public class Payment {
 
     private double amount;          // Çekilecek tutar
     private String cardHolderName;  // Kart sahibinin adı
     private String cardNumber;      // Kart numarası
 
-    // Kurucu Metot
+    /**
+     * Ödeme nesnesini gerekli bilgilerle hazırlar.
+     * @param amount Tahsil edilecek toplam tutar.
+     * @param cardHolderName Kartın üzerindeki isim.
+     * @param cardNumber 16 haneli kredi kartı numarası.
+     */
     public Payment(double amount, String cardHolderName, String cardNumber) {
         this.amount = amount;
         this.cardHolderName = cardHolderName;
         this.cardNumber = cardNumber;
     }
-
-    // Ödeme işlemini gerçekleştiren metot
+    /**
+     * Banka entegrasyonunu simüle ederek ödeme işlemini gerçekleştirir.
+     * Kart numarasının uzunluğunu kontrol ederek basit bir güvenlik doğrulaması yapar.
+     * @return Ödeme onaylandıysa true, kart geçersizse false döner.
+     */
     public boolean processPayment() {
         System.out.println(">> ÖDEME SİSTEMİ: Banka ile iletişim kuruluyor...");
 

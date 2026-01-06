@@ -1,11 +1,19 @@
 import java.util.Scanner;
-
+/**
+ * Skyline Hotel Rezervasyon Sistemi'nin giriş kapısı ve ana kontrol merkezidir.
+ * Bu sınıf; sistemin başlatılması, kullanıcı girişlerinin doğrulanması ve
+ * Admin/Müşteri panelleri arasındaki geçişlerin yönetilmesinden sorumludur.
+ */
 public class Main {
 
     private static Hotel hotel;
     private static AuthService authService;
     private static Scanner scanner;
-
+    /**
+     * Programın ana giriş noktasıdır. Sistemi hazırlar ve kullanıcıdan
+     * giriş bilgilerini alarak ilgili menüye (Admin veya Müşteri) yönlendirir.
+     * @param args Komut satırı argümanları (kullanılmıyor).
+     */
     public static void main(String[] args) {
         setupSystem();
 
@@ -37,7 +45,11 @@ public class Main {
             System.out.println("Sistem kapatılıyor...");
         }
     }
-
+    /**
+     * Sistemin ilk kurulumunu gerçekleştiren yardımcı metottur.
+     * Veritabanı görevi gören dosyaları yükler ve eğer sistem ilk kez
+     * çalışıyorsa varsayılan odaları oluşturur.
+     */
     private static void setupSystem() {
         scanner = new Scanner(System.in);
         authService = new AuthService();
@@ -56,7 +68,11 @@ public class Main {
             System.out.println(">> Sistem: Varsayılan odalar oluşturuldu.");
         }
     }
-
+    /**
+     * Otel yöneticileri için geliştirilmiş yönetim panelidir.
+     * Bu panel üzerinden tüm odaların raporu alınabilir ve sisteme
+     * yeni odalar (Standart/Deluxe) eklenebilir.
+     */
     private static void adminMenu() {
         boolean exit = false;
         while (!exit) {
@@ -99,7 +115,12 @@ public class Main {
             }
         }
     }
-
+    /**
+     * Otel müşterileri için hazırlanan interaktif işlem menüsüdür.
+     * Müşteriler burada müsait odaları görebilir, rezervasyon yapabilir,
+     * oda servisi çağırabilir ve ödeme yaparak çıkış işlemlerini tamamlayabilir.
+     * @param user Giriş yapmış olan mevcut kullanıcı nesnesi.
+     */
     private static void customerMenu(User user) {
         boolean exit = false;
 
