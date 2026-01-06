@@ -1,0 +1,13 @@
+=====================================
+       SKYLINE HOTEL - FATURA        
+=====================================
+REZERVASYON DURUMU:
+- Giriş Tarihi: 10.01.2026
+- Müşteri: Tuğberk Kocatekin
+- Oda No: 202
+- Konaklama Ücreti: 16124.313599999998 TL
+- Ekstralar (Yemek): 0.0 TL
+- TOPLAM TUTAR: 16124.313599999998 TL
+=====================================
+   Bizi tercih ettiğiniz için teşekkürler! 
+   İşlem Tarihi: 05.01.2026 

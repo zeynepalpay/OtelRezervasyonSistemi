@@ -1,0 +1,13 @@
+=====================================
+       SKYLINE HOTEL - FATURA        
+=====================================
+REZERVASYON DURUMU:
+- Giriş Tarihi: 7.06.2026
+- Müşteri: Şevval Yildiz
+- Oda No: 606
+- Konaklama Ücreti: 20736.0 TL
+- Ekstralar (Yemek): 250.0 TL
+- TOPLAM TUTAR: 20986.0 TL
+=====================================
+   Bizi tercih ettiğiniz için teşekkürler! 
+   İşlem Tarihi: 05.01.2026 

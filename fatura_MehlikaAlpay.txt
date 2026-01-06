@@ -1,0 +1,13 @@
+=====================================
+       SKYLINE HOTEL - FATURA        
+=====================================
+REZERVASYON DURUMU:
+- Giriş Tarihi: 9.01.2026
+- Müşteri: Mehlika Alpay
+- Oda No: 303
+- Konaklama Ücreti: 6000.0 TL
+- Ekstralar (Yemek): 80.0 TL
+- TOPLAM TUTAR: 6080.0 TL
+=====================================
+   Bizi tercih ettiğiniz için teşekkürler! 
+   İşlem Tarihi: 05.01.2026 

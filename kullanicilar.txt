@@ -4,3 +4,5 @@ tuğberk,123,Tuğberk Kocatekin,CUSTOMER
 zeynep,123,Zeynep Alpay,CUSTOMER
 şevval,123,Şevval Yildiz,CUSTOMER
 gülbahar,123,Gülbahar Doğan,CUSTOMER
+mehlika,123,Mehlika Alpay,CUSTOMER
+elif,123,Elif Demir,CUSTOMER

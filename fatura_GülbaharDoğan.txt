@@ -1,0 +1,13 @@
+=====================================
+       SKYLINE HOTEL - FATURA        
+=====================================
+REZERVASYON DURUMU:
+- Giriş Tarihi: 10.01.2026
+- Müşteri: Gülbahar Doğan
+- Oda No: 303
+- Konaklama Ücreti: 4000.0 TL
+- Ekstralar (Yemek): 0.0 TL
+- TOPLAM TUTAR: 4000.0 TL
+=====================================
+   Bizi tercih ettiğiniz için teşekkürler! 
+   İşlem Tarihi: 05.01.2026 

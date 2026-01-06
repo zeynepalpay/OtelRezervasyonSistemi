@@ -22,7 +22,7 @@ public class Reservation {
         this.orders = new ArrayList<>();
 
         // Odayı sistemde "Dolu" olarak işaretliyoruz
-        room.makeReservation();
+       // room.makeReservation();
 
         System.out.println("✅ Rezervasyon Kaydı Oluşturuldu. (Oda: " + room.getRoomNumber() + ")");
         System.out.println("ℹ️ Bilgi: Ödeme işlemi otelden çıkış yaparken alınacaktır.");

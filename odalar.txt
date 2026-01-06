@@ -1,7 +1,7 @@
 505,Standard,1200.0,true
 101,Standard,1000.0,true
-102,Standard,1000.0,true
-201,Deluxe,4478.976,true
-202,Deluxe,4478.976,true
+102,Standard,1000.0,false
+201,Deluxe,11145.125560319997,true
+202,Deluxe,11145.125560319997,true
 303,Standard,1000.0,true
-606,Deluxe,4147.2,true
+606,Deluxe,10319.560703999998,true

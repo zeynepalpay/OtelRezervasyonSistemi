@@ -130,6 +130,7 @@ public class Main {
             System.out.println("2. 📅 Rezervasyon Yap");
             System.out.println("3. 🍔 Oda Servisi (Yemek Siparişi)");
             System.out.println("4. 🚪 Otelden Çıkış ve Ödeme");
+            System.out.println("5. ❌ Rezervasyon İptal Et");
             System.out.print("Seçiminiz: ");
 
             if (!scanner.hasNextInt()) {
@@ -238,6 +239,15 @@ public class Main {
                         exit = true;
                     } else {
                         System.out.println("❌ HATA: Çıkış yapılacak rezervasyon bulunamadı!");
+                    }
+                    break;
+
+                case 5:
+                    System.out.print("İptal etmek istediğiniz Oda Numarası: ");
+                    if (scanner.hasNextInt()) {
+                        int cancelNo = scanner.nextInt();
+                        scanner.nextLine();
+                        hotel.cancelReservation(cancelNo);
                     }
                     break;
 

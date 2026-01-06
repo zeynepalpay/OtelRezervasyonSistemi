@@ -1,0 +1,13 @@
+=====================================
+       SKYLINE HOTEL - FATURA        
+=====================================
+REZERVASYON DURUMU:
+- Giriş Tarihi: 18.01.2026
+- Müşteri: Zeynep Yildiz
+- Oda No: 505
+- Konaklama Ücreti: 1200.0 TL
+- Ekstralar (Yemek): 0.0 TL
+- TOPLAM TUTAR: 1200.0 TL
+=====================================
+   Bizi tercih ettiğiniz için teşekkürler! 
+   İşlem Tarihi: 05.01.2026 

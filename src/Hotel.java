@@ -148,4 +148,36 @@ public class Hotel {
         }
         return null;
     }
+    /**
+     * Belirtilen oda numarasına ait aktif bir rezervasyonu iptal eder.
+     * Odayı tekrar müsait hale getirir ve dosyaya kaydeder.
+     * @param roomNumber İptal edilecek oda numarası.
+     * @return İptal işlemi başarılıysa true, rezervasyon bulunamadıysa false döner.
+     */
+    public boolean cancelReservation(int roomNumber) {
+        Reservation foundRez = null;
+
+        // 1. İptal edilecek rezervasyonu aktif listesinde bul
+        for (Reservation r : activeReservations) {
+            if (r.getRoom().getRoomNumber() == roomNumber) {
+                foundRez = r;
+                break;
+            }
+        }
+
+        // 2. Eğer bulunduysa listeden sil ve odayı boşalt
+        if (foundRez != null) {
+            activeReservations.remove(foundRez);
+            foundRez.getRoom().setAvailable(true); // Odayı müsait (true) yap
+
+            // 3. KRİTİK: Dosyadaki oda durumunu anında güncelle
+            saveRoomsToFile(); //
+
+            System.out.println("✅ İŞLEM BAŞARILI: Oda " + roomNumber + " rezervasyonu iptal edildi.");
+            return true;
+        } else {
+            System.out.println("❌ HATA: Bu odaya ait aktif bir konaklama/rezervasyon bulunamadı.");
+            return false;
+        }
+    }
 }
